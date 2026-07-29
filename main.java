@@ -45,8 +45,8 @@ public class Main {
         System.out.println("\n====================================================");
         System.out.println("2일차 객체지향 시작");
 
-        // 오늘 날짜로 일기 객체 생성
-        Diary day2 = new Diary(LocalDate.now());
+        // 2026년 7월 28일로 일기 객체 생성
+        Diary day2 = new Diary(LocalDate.of(2026, 7, 28));
 
         // 캡슐화된 메서드를 통해 안전하게 오늘 데이터 입력
         day2.setJapaneseStudy("히라가나 1시간 반 동안 집중 완료!");
@@ -55,14 +55,35 @@ public class Main {
 
         // 일기장 출력 메서드 호출
         day2.printDailyLog();
+
+        // ========================================================
+        // [Day 3] 상속과 오버라이딩
+        // ========================================================
+        System.out.println("\n====================================================");
+        System.out.println("3일차 객체지향 시작");
+
+        // 부모 클래스의 기능을 물려받은 자식 클래스 객체 생성 (26.07.29일 기준)
+        SecureDiary day3 = new SecureDiary(LocalDate.of(2026,7,29));
+
+        // 부모에게 물려받은 메서드 그대로 사용
+        day3.setJapaneseStudy("히라가나 가타카나 암기 및 독음 연습");
+        day3.setJavaStudy("자바 객체지향에서 상속과 오버라이딩 문법 복습, 아무래도 날짜가 전부 localdate.now()로 설정해두니 " +
+                "오늘 날짜로 모든 날짜가 작성되어서 문제 해결 위해서 실제 날짜로 수정 ");
+        day3.setFeeling("코드가 상속을 통해 깔끔하게 분리되는 걸 보니 백엔드 구조가 눈에 들어온다.");
+
+        // 자식 클래스에만 새로 추가된 보안 취약점 방어 데이터 입력
+        day3.setSecurityConcept("웹 보안 기초 - SQL Injection 공격 방어를 위한 PreparedStatement 활용법 공부");
+
+        // 오버라이딩된 출력 메서드 호출
+        day3.printDailyLog();
     }
 }
 
 class Diary {
-    private LocalDate date;
-    private String japaneseStudy;
-    private String javaStudy;
-    private String feeling;
+    protected  LocalDate date;
+    protected  String japaneseStudy;
+    protected  String javaStudy;
+    protected  String feeling;
 
     public Diary(LocalDate date) {
         this.date = date;
@@ -87,5 +108,35 @@ class Diary {
         System.out.println("💭 느낀점: " + this.feeling);
         System.out.println("====================================================");
         System.out.println("[SYSTEM] 2일 차 연속 약속한 공부 완료!");
+    }
+}
+
+//자식 클래스 SecureDiary
+class SecureDiary extends Diary{
+    //자식 클래스의 전용 확장 데이터
+    private String securityConcept;
+
+    //생성자 : 부모 생성자 호출 (super키워드)
+    public SecureDiary(LocalDate date){
+        super(date);
+    }
+
+    // 자식 전용 setter
+    public void setSecurityConcept(String securityConcept){
+        this.securityConcept = securityConcept;
+    }
+
+    //오버라이딩 = 메서드 재정의
+    //부모의 printDailyLog 기능을 업그레이드 해서 덮어쓰기
+    @Override
+    public void printDailyLog() {
+        System.out.println("🔐 [SECURITY BACKEND DIARY DAY 3] 🔐");
+        System.out.println("📅 일자: " + this.date);
+        System.out.println("🇯🇵 일본어: " + this.japaneseStudy);
+        System.out.println("💻 자바/백엔드: " + this.javaStudy);
+        System.out.println("🛡️ 보안 취약점 대책: " + this.securityConcept); // 확장된 출력
+        System.out.println("💭 느낀점: " + this.feeling);
+        System.out.println("====================================================");
+        System.out.println("[SYSTEM] 상속(Inheritance) 구조 적용 완료!");
     }
 }
