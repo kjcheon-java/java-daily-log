@@ -66,6 +66,7 @@ public class Main {
         SecureDiary day3 = new SecureDiary(LocalDate.of(2026,7,29));
 
         // 부모에게 물려받은 메서드 그대로 사용
+        day3.setNday("3");
         day3.setJapaneseStudy("히라가나 가타카나 암기 및 독음 연습");
         day3.setJavaStudy("자바 객체지향에서 상속과 오버라이딩 문법 복습, 아무래도 날짜가 전부 localdate.now()로 설정해두니 " +
                 "오늘 날짜로 모든 날짜가 작성되어서 문제 해결 위해서 실제 날짜로 수정 ");
@@ -76,6 +77,31 @@ public class Main {
 
         // 오버라이딩된 출력 메서드 호출
         day3.printDailyLog();
+
+
+        // ========================================================
+        // [Day 4] 다형성 일기
+        // ========================================================
+        System.out.println("\n====================================================");
+        System.out.println("🛡️ [4일차 객체지향 다형성 시작] 🛡️");
+
+        // [복습] 다형성 적용
+        // 부모 타입의 참조 변수로 자식 객체를 참조할 수 있다.
+        Diary day4 = new SecureDiary(LocalDate.of(2026, 7, 30));
+
+        // 부모 타입이라도 실제 객체가 자식이므로, 오버라이딩된 자식의 Setter와 메서드가 동작.
+        if (day4 instanceof SecureDiary) {
+            SecureDiary secureDay4 = (SecureDiary) day4;
+            secureDay4.setNday("4");
+            secureDay4.setJapaneseStudy("바쁜 약속 일정 속에서도 자투리 시간 활용해 일어 단어 복습");
+            secureDay4.setJavaStudy("다형성과 타입 형변환");
+            secureDay4.setSecurityConcept("웹 보안 실무 - 인증/인가 메커니즘과 JWT 토큰의 구조 이해");
+            secureDay4.setFeeling("피곤한 약속 끝내고 와서 밤늦게라도 마저 해야지 ");
+        }
+
+        // 다형성을 통해 부모 메서드를 호출해도, 실제 자식의 업그레이드된 출력문이 실행됨!
+        day4.printDailyLog();
+
     }
 }
 
@@ -84,6 +110,7 @@ class Diary {
     protected  String japaneseStudy;
     protected  String javaStudy;
     protected  String feeling;
+    protected  String nday;
 
     public Diary(LocalDate date) {
         this.date = date;
@@ -100,6 +127,8 @@ class Diary {
     public void setFeeling(String feeling) {
         this.feeling = feeling;
     }
+
+    public void setNday(String nday){this.nday = nday; }
 
     public void printDailyLog() {
         System.out.println("📅 일자: " + this.date);
@@ -130,7 +159,7 @@ class SecureDiary extends Diary{
     //부모의 printDailyLog 기능을 업그레이드 해서 덮어쓰기
     @Override
     public void printDailyLog() {
-        System.out.println("🔐 [SECURITY BACKEND DIARY DAY 3] 🔐");
+        System.out.println("🔐 [SECURITY BACKEND DIARY DAY"+ this.nday+"] 🔐");
         System.out.println("📅 일자: " + this.date);
         System.out.println("🇯🇵 일본어: " + this.japaneseStudy);
         System.out.println("💻 자바/백엔드: " + this.javaStudy);
