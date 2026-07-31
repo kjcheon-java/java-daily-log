@@ -102,6 +102,25 @@ public class Main {
         // 다형성을 통해 부모 메서드를 호출해도, 실제 자식의 업그레이드된 출력문이 실행됨!
         day4.printDailyLog();
 
+        // ========================================================
+        // [Day 5] 추상화 일기 코드
+        // ========================================================
+
+        System.out.println("\n====================================================");
+        System.out.println("🧱 [5일차 객체지향 추상화 시작] 🧱");
+
+        // 추상 클래스(WeeklyReview)를 구체화한 자식 객체 생성
+        WeeklyReview myWeek = new FinalReview();
+
+        // 일주일 요약 데이터 입력
+        myWeek.setSummary("월요일을 시작으로 금요일까지 단 하루도 깨지지 않고 5일 연속 기상 및 공부 성공");
+        myWeek.setNextWeekPlan("다음 주에는 자바 기본기를 바탕으로 진짜 Spring Boot 웹 백엔드 서버 구축을 시작해볼 생각");
+        myWeek.setNday("5");
+
+        // 추상 메서드로 강제 구현된 핵심 성과 출력 호출
+        myWeek.printWeeklyReport();
+
+
     }
 }
 
@@ -167,5 +186,32 @@ class SecureDiary extends Diary{
         System.out.println("💭 느낀점: " + this.feeling);
         System.out.println("====================================================");
         System.out.println("[SYSTEM] 상속(Inheritance) 구조 적용 완료!");
+    }
+}
+
+// 추상클래스
+abstract class WeeklyReview {
+    protected String nDay;
+    protected String summary;
+    protected String nextWeekPlan;
+
+    // 💡 공통 Setter 메서드 탑재
+    public void setNday(String nDay) { this.nDay = nDay; }
+    public void setSummary(String summary) { this.summary = summary; }
+    public void setNextWeekPlan(String nextWeekPlan) { this.nextWeekPlan = nextWeekPlan; }
+
+    // 추상 메서드: 자식 클래스에서 반드시 강제로 오버라이딩하여 구현
+    public abstract void printWeeklyReport();
+}
+
+// 구체 클래스: 추상 클래스를 상속받아 진짜 기능을 구현함
+class FinalReview extends WeeklyReview {
+    @Override
+    public void printWeeklyReport() {
+        System.out.println("🔐 [SECURITY BACKEND DIARY DAY"+ this.nDay+"] 🔐");
+        System.out.println("🟩 이번 주 총평: " + this.summary);
+        System.out.println("🎯 다음 주 계획: " + this.nextWeekPlan);
+        System.out.println("====================================================");
+        System.out.println("[SYSTEM] 자바 객체지향 복습 완료");
     }
 }
