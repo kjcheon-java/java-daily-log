@@ -121,6 +121,21 @@ public class Main {
         myWeek.printWeeklyReport();
 
 
+        // ========================================================
+        // [다시 시작] 인터페이스를 활용
+        // ========================================================
+        System.out.println("\n====================================================");
+        System.out.println("🔌 [복귀 완료 - 인터페이스 시작] 🔌");
+
+        // 인터페이스 타입으로 객체 생성 (다형성 활용)
+        LogManager myRecoveryLog = new RecoveryDiary(LocalDate.of(2026, 8, 5));
+
+        // 데이터 출력 및 백업 시스템 가동
+        myRecoveryLog.readLog();
+        myRecoveryLog.backupToGithub();
+
+
+
     }
 }
 
@@ -213,5 +228,35 @@ class FinalReview extends WeeklyReview {
         System.out.println("🎯 다음 주 계획: " + this.nextWeekPlan);
         System.out.println("====================================================");
         System.out.println("[SYSTEM] 자바 객체지향 복습 완료");
+    }
+}
+
+// 💡 인터페이스: 규격서 정의 (모든 메서드는 추상 메서드)
+interface LogManager {
+    void readLog();       // 일기 읽기 기능 강제
+    void backupToGithub(); // 깃허브 백업 기능 강제
+}
+
+// 구체 클래스: 인터페이스를 구현(implements)함
+class RecoveryDiary implements LogManager {
+    private LocalDate date;
+
+    public RecoveryDiary(LocalDate date) {
+        this.date = date;
+    }
+
+    @Override
+    public void readLog() {
+        System.out.println("🩹 [RECOVERY DEVELOPER DIARY] 🩹");
+        System.out.println("📅 복귀 일자: " + this.date);
+        System.out.println("🟩 공부 내용: 몸 관리 잘하고 다시 복귀! 인터페이스 문법 복습 완료.");
+        System.out.println("💭 오늘의 한줄: 한 번 비었다고 더 안할수는 없지! 열심히 해봅시다잉 다시");
+    }
+
+    @Override
+    public void backupToGithub() {
+        System.out.println("====================================================");
+        System.out.println("[SYSTEM] GitHub Desktop 연동 확인 완료.");
+        System.out.println("====================================================");
     }
 }
