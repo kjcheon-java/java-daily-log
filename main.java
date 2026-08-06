@@ -134,6 +134,29 @@ public class Main {
         myRecoveryLog.readLog();
         myRecoveryLog.backupToGithub();
 
+        // ========================================================
+        // [예외 처리] try-catch 문을 활용한 보안 방어막 빌드업!
+        // ========================================================
+        System.out.println("\n====================================================");
+        System.out.println("🛡️ [에러 방어 - 예외 처리 빌드업 시작] 🛡️");
+
+        // 의도적으로 에러를 발생시키기 위해, 내용을 비워둔 빈 일기장 생성
+        SafeDiary errorLog = new SafeDiary(LocalDate.of(2026, 8, 6), null);
+
+        // 에러가 날 수 있는 위험한 코드를 try 블록 안에 넣고 감시합니다.
+        try {
+            errorLog.runSecurePrint();
+        } catch (NullPointerException e) {
+            // 에러가 발생했을 때 프로그램이 터지지 않고 실행될 방어 코드
+            System.out.println("[⚠️ SECURITY RISK DETECTED] 데이터 누락 에러 감지!");
+            System.out.println("[방어 메커니즘 가동] 에러 원인: " + e.getMessage());
+            System.out.println("[SYSTEM] 시스템 강제 종료를 막고 안전하게 복구했습니다.");
+        } finally {
+            // 에러 여부와 상관없이 무조건 마지막에 실행되는 블록
+            System.out.println("====================================================");
+            System.out.println("[SYSTEM] 8월 6일 예외 처리 실습 이후 처리 메시지 확인 완료");
+            System.out.println("====================================================");
+        }
 
 
     }
@@ -258,5 +281,28 @@ class RecoveryDiary implements LogManager {
         System.out.println("====================================================");
         System.out.println("[SYSTEM] GitHub Desktop 연동 확인 완료.");
         System.out.println("====================================================");
+    }
+}
+
+// 구체 클래스: 예외 처리 테스트를 위한 보안 클래스
+class SafeDiary {
+    private LocalDate date;
+    private String content;
+
+    public SafeDiary(LocalDate date, String content) {
+        this.date = date;
+        this.content = content;
+    }
+
+    // 에러를 유발할 수 있는 위험한 메서드
+    public void runSecurePrint() {
+        System.out.println("📅 일자: " + this.date);
+
+        // 💡 만약 content가 null(빈 값)이면, .length()를 호출하는 순간 에러가 발생
+        if (this.content.length() == 0) {
+            System.out.println("일기 내용이 비어 있습니다.");
+        } else {
+            System.out.println("📝 내용: " + this.content);
+        }
     }
 }
