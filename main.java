@@ -157,7 +157,29 @@ public class Main {
             System.out.println("[SYSTEM] 8월 6일 예외 처리 실습 이후 처리 메시지 확인 완료");
             System.out.println("====================================================");
         }
+        // ========================================================
+        // [컬렉션 프레임워크] ArrayList를 활용한 다중 데이터 관리 및 복귀
+        // ========================================================
 
+        System.out.println("\n====================================");
+        System.out.println("[복귀 했습니다 - 컬렉션 프레임워크 빌드업");
+
+        //자바의 대표적인 동적 배열 ArrayList 생성 (여러 개의 일기를 한번에 관리)
+        java.util.List<String> recoveryLogs = new java.util.ArrayList<>();
+
+        //데이터 추가 (.add 메서드)
+        recoveryLogs.add("1. 몸 아프고 바빠서 못채운 공백기 끝내기");
+        recoveryLogs.add("2. 자바 필수 개념 arraylist 동적 배열 공부");
+        recoveryLogs.add("3. 무너져도 잘해보자 돈관리도 시작");
+
+        // 반복문을 활용해 모아둔 일기 출력
+        System.out.println("🩹 [RECOVERY MULTI-LOG AT AUGUST 13] 🩹");
+        for (String logItem : recoveryLogs) {
+            System.out.println("-> " + logItem);
+        }
+        System.out.println("========================================================");
+        System.out.println("[SYSTEM] ArrayList 구조 적용 및 8월 13일 일기 작성 완료");
+        System.out.println(" ========================================================");
 
     }
 }
