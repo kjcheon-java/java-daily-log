@@ -181,7 +181,64 @@ public class Main {
         System.out.println("[SYSTEM] ArrayList 구조 적용 및 8월 13일 일기 작성 완료");
         System.out.println(" ========================================================");
 
+        // ========================================================
+        // [파일 입출력 & 보안] 파일 저장 및 데이터 무결성(Integrity) 검증
+        // ========================================================
+        System.out.println("\n====================================================");
+        System.out.println("💾 [영속성 확보 - 파일 입출력 및 데이터 무결성 검증 시작] 💾");
+
+        String filePath = "secure_diary.txt";
+
+        // 1. 파일 쓰기 (FileWriter와 try-with-resources 문법)
+        // try 옆 괄호() 안에 객체를 생성하면, 작업이 끝난 후 자원(Resource)을 자동으로 닫아주어 메모리 누수를 방지합니다.
+        try (java.io.FileWriter writer = new java.io.FileWriter(filePath)) {
+            System.out.println("[SYSTEM] 일기 파일에 안전하게 데이터를 기록하는 중...");
+
+            // ArrayList에 있던 내용을 파일로 저장합니다.
+            for (String logItem : recoveryLogs) {
+                writer.write(logItem + "\n");
+            }
+            System.out.println("[SUCCESS] 암호화 및 파일 저장 완료: " + filePath);
+
+        } catch (java.io.IOException e) {
+            System.out.println("[❌ SECURITY RISK] 파일 쓰기 중 시스템 에러 발생: " + e.getMessage());
+        }
+
+        // 2. 파일 읽기 및 악성 코드/변조 검증 (Data Validation)
+        System.out.println("\n🔍 [검증 시스템 가동] 저장된 파일 읽기 및 무결성 검사 수행...");
+
+        try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(filePath))) {
+            String line;
+            int lineNumber = 1;
+
+            while ((line = reader.readLine()) != null) {
+                // 🛡️ [보안 방어막] 입력값 검증 (Input Validation)
+                // 만약 해커가 파일을 변조하여 시스템 명령어나 비정상적인 문자(예: 관리자 권한 탈취 시도)를 주입했다면?
+                if (line.contains("DROP TABLE") || line.contains("sudo rm")) {
+                    System.out.println("[🚨 CRITICAL WARNING] 라인 " + lineNumber + "에서 데이터 변조 및 공격 징후 감지!");
+                    System.out.println("[ACTION] 변조된 데이터 출력을 차단하고 관리자에게 알립니다.");
+                    break;
+                }
+
+                // 안전한 데이터만 화면에 출력합니다.
+                System.out.println("[안전 확인 - Line " + lineNumber + "] " + line);
+                lineNumber++;
+            }
+
+        } catch (java.io.FileNotFoundException e) {
+            System.out.println("[⚠️ ERROR] 일기 파일을 찾을 수 없습니다. 경로를 확인하세요.");
+        } catch (java.io.IOException e) {
+            System.out.println("[⚠️ ERROR] 파일 읽기 중 오류 발생: " + e.getMessage());
+        }
+
+        System.out.println("====================================================");
+        System.out.println("[SYSTEM] 8월 14일 파일 입출력 및 보안 입력 검증 실습 완료");
+        System.out.println("====================================================");
+
+
     }
+
+
 }
 
 class Diary {
