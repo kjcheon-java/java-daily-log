@@ -1,4 +1,8 @@
 import java.time.LocalDate;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 public class Main {
     public static void main(String[] args){
@@ -236,7 +240,56 @@ public class Main {
         System.out.println("====================================================");
 
 
+        // ========================================================
+        // [백엔드 보안 최강화] AES 암호화 기반 파일 저장 및 복호화
+        // ========================================================
+        System.out.println("\n====================================================");
+        System.out.println("🔐 [기밀성 최강화 - AES 암호화 일기장 시스템 가동] 🔐");
+
+        String cryptoFilePath = "crypto_diary.txt";
+
+        // 1. 데이터를 암호화하여 파일에 저장하기
+        try (java.io.FileWriter writer = new java.io.FileWriter(cryptoFilePath)) {
+            System.out.println("[SYSTEM] 일기 데이터를 AES 알고리즘으로 암호화하는 중");
+
+            for (String logItem : recoveryLogs) {
+                //  그냥 쓰지 않고, SecurityUtil을 통해 암호화한 후 저장
+                String encryptedLine = SafeDiary.SecurityUtil.encrypt(logItem);
+                writer.write(encryptedLine + "\n");
+            }
+            System.out.println("[SUCCESS] 암호화 파일 저장 완료: " + cryptoFilePath);
+            System.out.println("[💡 팁] 인텔리제이 좌측에서 " + cryptoFilePath + " 파일을 열어 내용을 직접 확인해보세요!");
+
+        } catch (java.io.IOException e) {
+            System.out.println("[⚠️ ERROR] 파일 쓰기 실패: " + e.getMessage());
+        }
+
+        // 2. 암호화된 파일을 읽어와서 복호화하여 출력하기
+        System.out.println("\n🔓 [복호화 시스템 가동] 암호화된 파일 복구 및 읽기 시작...");
+
+        try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(cryptoFilePath))) {
+            String encryptedLine;
+            int lineNumber = 1;
+
+            while ((encryptedLine = reader.readLine()) != null) {
+                // 🛡️ [보안 방어막] 파일에서 읽은 외계어(암호문)를 다시 사람이 읽을 수 있게 복호화!
+                String decryptedLine = SafeDiary.SecurityUtil.decrypt(encryptedLine);
+
+                System.out.println("[안전 복호화 완료 - Line " + lineNumber + "] " + decryptedLine);
+                lineNumber++;
+            }
+
+        } catch (java.io.IOException e) {
+            System.out.println("[ERROR] 파일 읽기 또는 복호화 실패: " + e.getMessage());
+        }
+
+        System.out.println("====================================================");
+        System.out.println("[SYSTEM] 오늘자 암호화 실습 종료");
+        System.out.println("====================================================");
+
     }
+
+
 
 
 }
@@ -384,4 +437,45 @@ class SafeDiary {
             System.out.println("📝 내용: " + this.content);
         }
     }
+
+
+    public class SecurityUtil {
+
+        // AES-256을 위한 32바이트(256비트) 비밀키
+        // 실무에서는 환경변수나 Key Vault에 숨기지만, 우선 하드코딩 먼저 시도. 비밀키는 ai 통해서 작성
+        private static final String SECRET_KEY = "S3cur3D1aryK3yF0rBack3ndStUdy!!?";
+        private static final String ALGORITHM = "AES";
+
+        // 평문을 암호문으로 바꾸는 메서드
+        public static String encrypt(String plainText) {
+            try {
+                SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(StandardCharsets.UTF_8), ALGORITHM);
+                Cipher cipher = Cipher.getInstance(ALGORITHM);
+                cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+
+                byte[] encryptedBytes = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
+                // 암호화된 바이너리 데이터를 텍스트 파일에 쓰기 좋게 Base64 문자열로 변환합니다.
+                return Base64.getEncoder().encodeToString(encryptedBytes);
+            } catch (Exception e) {
+                throw new RuntimeException("암호화 중 오류 발생: " + e.getMessage());
+            }
+        }
+
+        // 암호문을 다시 평문으로 바꾸는 메서드
+        public static String decrypt(String cipherText) {
+            try {
+                SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(StandardCharsets.UTF_8), ALGORITHM);
+                Cipher cipher = Cipher.getInstance(ALGORITHM);
+                cipher.init(Cipher.DECRYPT_MODE, keySpec);
+
+                byte[] decodedBytes = Base64.getDecoder().decode(cipherText);
+                byte[] decryptedBytes = cipher.doFinal(decodedBytes);
+                return new String(decryptedBytes, StandardCharsets.UTF_8);
+            } catch (Exception e) {
+                throw new RuntimeException("복호화 중 오류 발생. 키가 틀렸거나 데이터가 오염되었습니다. " + e.getMessage());
+            }
+        }
+    }
 }
+
+
